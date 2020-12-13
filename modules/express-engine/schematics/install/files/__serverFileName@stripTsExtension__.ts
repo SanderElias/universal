@@ -19,7 +19,7 @@ const serverSettings: ServerSettings = {
   sslKey: '',
   sslCert: '',
   hostName: 'localHost',
-  port: Number.parseInt(process.env.PORT || <%= serverPort %> || '0', 10) || 4000,
+  port: Number.parseInt(process.env.PORT || '<%= serverPort %>' || '0', 10) || 4000,
 };
 
 // The Express app is exported so that it can be used by serverless Functions.

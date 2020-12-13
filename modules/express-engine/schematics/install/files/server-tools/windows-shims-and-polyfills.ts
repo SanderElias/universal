@@ -1,7 +1,7 @@
 // tslint:disable: no-string-literal
 // tslint:disable: typedef
 // tslint:disable: only-arrow-functions
-import { createWindow } from 'domino';
+import { createWindow } from "domino";
 
 /**
  * overwrite existing window type for this polyfills file
@@ -12,7 +12,7 @@ interface Window {
   // Event:Event
 }
 
-const window: Window = createWindow('');
+const window: Window = createWindow("");
 
 /**
  * Set up the types for all the mocks that are attached to the global.
@@ -35,16 +35,14 @@ declare var global: {
   /** Base HTML element. */
   Element: Element;
   /** An event which takes place in the DOM */
-  Event: Event;
+  Event: (name: any) => Event;
   /** Hyperlink anchor element. */
-  HTMLAnchorElement: HTMLAnchorElement;
+  HTMLAnchorElement: (name:any) =>  HTMLAnchorElement;
   /** A keyboard event from the DOM */
-  KeyboardEvent: KeyboardEvent;
+  KeyboardEvent: (name: any) => KeyboardEvent;
   /** In page data request without navigating from the current URL. */
   XMLHttpRequest: XMLHttpRequest;
 };
-
-console.log(window.Element);
 
 /** Assign global values from domino window. */
 global.window = window;
@@ -57,24 +55,31 @@ global.navigator = window.navigator;
  */
 global.CSS = window.CSS = function () {} as any;
 global.Element = window.Element = (function () {} as unknown) as Element;
-global.Event = window.Event = (function () {} as unknown) as Event;
-global.HTMLAnchorElement = window.HTMLAnchorElement = (function () {} as unknown) as HTMLAnchorElement;
-global.KeyboardEvent = window.KeyboardEvent = (function () {} as unknown) as KeyboardEvent;
+global.Event = window.Event = (function () {} as unknown) as (n) => Event;
+global.HTMLAnchorElement = window.HTMLAnchorElement = (function () {} as unknown) as () => HTMLAnchorElement;
+global.KeyboardEvent = window.KeyboardEvent = (function () {} as unknown) as () => KeyboardEvent;
 
 /** Example mock for using Prism */
 // global.Prism = undefined;
 
 /**
- * Mock for requestAnimationFrame.
+ * polyfill for requestAnimationFrame.
  * The callback will be called at the end of the micro-task-queue.
  * It can not be cancelled.
  */
-global.requestAnimationFrame = window.requestAnimationFrame = (
+global.requestAnimationFrame = window.requestAnimationFrame = function rqa(
   callback: FrameRequestCallback
-) => (Promise.resolve().then(() => callback(performance.now())), 1);
+) {
+  /**
+   * use a setTimeout to mimic requestAnimantionFrame
+   * it logs to console, so you can spot excessive use.
+   */
+  console.log(`requestAnimationFrame called`);
+  return setTimeout(() => callback(performance.now())), 0;
+};
 
 /**
  * Mock for cancelAnimationFrame.
- * An empty function, animation frames can not be cancelled.
+ * An empty function, animation frames can not be cancelled with this shim.
  */
 global.cancelAnimationFrame = window.cancelAnimationFrame = (x?: number) => {};
