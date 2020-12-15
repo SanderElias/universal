@@ -5,7 +5,8 @@ import { createWindow } from "domino";
 
 /**
  * overwrite existing window type for this polyfills file
- * This is needed so we can all the needed polyfills without TS errors.
+ * This is needed so we can create all the needed polyfills
+ * on Window without TS errors.
  */
 interface Window {
   [prop: string]: any;
