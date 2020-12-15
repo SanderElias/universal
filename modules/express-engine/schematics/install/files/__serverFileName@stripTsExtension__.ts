@@ -4,7 +4,9 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
 import { APP_BASE_HREF } from '@angular/common';
-import { addSSL, ServerSettings } from './server-tools/add-ssl';
+import { addSSL } from './server-tools/add-ssl';
+import { ServerSettings } from './server-tools/server-settings.interface';
+
 import { existsSync } from 'fs';
 
 /** Must be imported before AppServerModule to allow DOM mocks to initialize */

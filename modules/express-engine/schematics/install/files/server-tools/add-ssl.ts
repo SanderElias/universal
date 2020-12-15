@@ -1,20 +1,8 @@
 import * as express from 'express';
 import { readFileSync } from 'fs';
 import * as https from 'https';
+import { ServerSettings } from './server-settings.interface';
 
-
-export interface ServerSettings {
-  /** is SSL going to be used? */
-  useSSL: boolean;
-  /** Full path to private key file. */
-  sslKey: string;
-  /** Full path to public cert file. */
-  sslCert: string;
-  /** The hostname to bind on. */
-  hostName: string;
-  /** The port number the server will be served on. */
-  port: number;
-}
 
 // Webpack will replace 'require' with '__webpack_require__'
 // '__non_webpack_require__' is a proxy to Node 'require'
