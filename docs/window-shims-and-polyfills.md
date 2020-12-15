@@ -1,35 +1,35 @@
 # Window shims and polyfills.
 
-Please consult the [gotchas](./gotchas.md), as it containes the preferred way to solve the problems where we need those shims and polyfills for.
+Please consult the [gotchas](./gotchas.md), as it contains the preferred way to solve the problems where we need those shims and polyfills for.
 
-As part of the default installation we now provide a sample file on how you can provide `window` and `document` shims to your universal application. We created this on popular demand, and it serves as a starting point. 
+As part of the default installation we now provide a sample file on how you can provide `window` and `document` shims to your universal application. This file serves as a starting point.
 
 > ## Note
-> Please be aware that using the global scope can lead to memory leaks, and security issues.
-> The shims and polyfills provided will not cause this by themselves, but if your application or any of its dependencies,
+> Please be aware that using the global scope can lead to memory leaks and security issues.
+> The shims and polyfills provided will not cause this by themselves, but if your application or any of its dependencies
 > stores or modifies _anything_ that is in the global scope (this includes, but is not limited to `window` and `document`) you are at risk.
 
 
 ## Why
 
-We see a lot of questions on ngUniversal that revolve around using 3rth party libraries. With this addition we do provide a starting point, so you so have some samples and an idea how to tackle those issues. Once more, we would like to express that this is a last-resort solution, and you should really be using the other options available. The preferred way to deal with with this is utilizing the Angular injector.
+We see a lot of questions on ngUniversal that revolve around using 3rd party libraries. With this addition, we are providing a starting point to give you some samples and an idea on how to tackle issues related to using 3rd party libraries. We would like to emphasize that these techniques are a last-resort solution. The preferred way to deal with 3rd party libraries is by utilizing the Angular injector.
 
 ## Location
 
-We did generate a file called `windows-shims-and-polyfiles.ts` in a subfolder of the location where `server.ts` is created.
+We have generated a file called `windows-shims-and-polyfiles.ts` in a subfolder of the location where `server.ts is` created.
 
 ## How
 
-Because we need to compile your applications code for use in node, weWe need 3 types of helpers. 
-1. TypeScript shims.
+Because we need to compile your application's code for use in node, we need 3 types of helpers:
+1. TypeScript shims
 2. Node shims
 3. node polyfills
 
-Those are needed, because even if the code isn't used when your app is rendered during SSR, it still needs to read and compile all of the code in your application.
+Those are needed even if the code isn't used when your app is rendered during SSR as Universal still needs to read and compile all of the code in your application.
 
-### 1. TypeScript shims.
+### 1. TypeScript shims
 
-TypesScript shims are needed when your application throws type errors when it's compiled for us in universal. If the code inside the app is properly shielded by feature detection, nd doesn't run during SSR, TS might still complain about a missing type. This is the most easy kind of shim as it only involves the type system.When you look into  provided file, you will see:
+Since many applications will throw type errors while being compiled by Universal, TypeScript shims are needed. If the code inside the app is properly shielded by feature detection and doesn't run during SSR, TS might still complain about a missing type. This is the simplest kind of shim as it only involves the type system. When you look into the provided file, you will see:
 
 ```typescript
 declare var global: {
