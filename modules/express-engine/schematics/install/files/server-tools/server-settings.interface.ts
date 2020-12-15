@@ -1,5 +1,7 @@
-
-
+/**
+ * The ServerSettings interface helps
+ * the autocompletion in the server.ts
+ */
 export interface ServerSettings {
   /** is SSL going to be used? */
   useSSL: boolean;
