@@ -1,6 +1,6 @@
 # Window shims and polyfills.
 
-Please consult the [gotchas](./gotchas.md), as it contains the preferred way to solve the problems where we need those shims and polyfills for.
+Please consult the [gotchas](./gotchas.md), as it contains the preferred way to solve the problems where we need shims and polyfills.
 
 As part of the default installation we now provide a sample file on how you can provide `window` and `document` shims to your universal application. This file serves as a starting point.
 
@@ -38,14 +38,15 @@ declare var global: {
   /** Reference to the document. */
   document: Document;
   // ...
-  /** Reference to SomeLibrary. */
+  /** Reference to SomeLibrary. (this would be added by you) */
   SomeLibrary: any;
   // ...
 };
 ```
 
-Lets take `SomeLibrary` as an example. We just assign any to it, so that any reference in the code would not cause an TS compilation error. As we have properly used feature detection, in our application, (as shown below) the code that is actually using the library is _not_ called at all. However, Typescript is still compiling the code, and will error out if it's not available on the global scope.
+Lets take a theoretical `SomeLibrary` as an example. We just assign any to it in the shims and polyfills file, so that any reference in the code would not cause a TS compilation error. As we have properly used feature detection, in our application, (as shown in the following example) the code that is actually using the library is not called at all. However, Typescript is still compiling the code, and will error out if it's not available on the global scope.
 
+when you look into the provided shims and polyfills file:
 ```typescript
 import { Component, ElementRef, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 
@@ -85,11 +86,11 @@ export class HomeComponent implements OnInit {
 }
 ```
 
-When you have TypeScript typing error during compilation for SSR, start off with adding the missing type to the global decoration. the type `any` will do, but providing proper typing will help you discover problems sooner.
+When you have a TypeScript error during compilation for SSR, start off with adding the missing type to the global decoration. The `any` type will do, but providing proper typing will help you discover problems sooner.
 
 ### 2. Node shims 
 
-When your application is using some browser (or 3rth party) functionality that is not available in node, you might want to provide a stub function that as the same type signature, but isn't actually doing anything. I will take the Event function. It creates a new event. Still, there is no way you can trigger that during SSR. So its needs to pass compilation, but nothing more.
+If your application uses any browser (or 3rd party) functionality that is not available in node, you may want to provide an empty stub function with the same type signature. Let's look at an example using the Event function which creates a new event. There is no way you can trigger that during SSR, so its needs to pass compilation, but nothing more.
 
 ```typescript
 global.Event = window.Event = (function () {} as unknown) as ((n) =>Event);
@@ -103,7 +104,7 @@ This will allow your app to compile and run during SSR.
 
 ### 3. node polyfills
 
-Node polyfills are used where there is no other way around getting your application up and running. Lets say we have a legacy library that uses a requestAnimationFrame in its init routine, and it will crash SSR if its not there.
+Node polyfills are used when there is no other way to get your application through the Universal compilation process. Let's look at an example of shimming for a legacy library that uses requestAnimationFrame in its init routine. This will crash during SSR if requestAnimationFrame is not present.
 
 ```typescript
 global.requestAnimationFrame = window.requestAnimationFrame = (callback: FrameRequestCallback) => {
@@ -112,9 +113,9 @@ global.requestAnimationFrame = window.requestAnimationFrame = (callback: FrameRe
 });
 ```
 
-Here we mimic the `requestAnimationFrame` with a setTimout. We make sure the call signature is identical to what the browser provides. It needles to say that this is trikey. When the application uses `requestAnimationFrame` recursively, SSR will be stuck in an endless loop. This sample is chosen to show the danger of this approach.
+Here we mimic the `requestAnimationFrame` with a setTimout. We make sure the call signature is identical to what the browser provides. This is extremely delicate. When the application uses `requestAnimationFrame` recursively, SSR will be stuck in an endless loop. This sample was chosen to show the danger of this approach.
 
 
 ## conclusion
 
-We provide this file, to aid you getting up and running with universal. It shows how to shim stub or polyfill missing browser or 3rth party libraries. It serves as a starting point, from where you can build your own SSR solution. However, make sure your app doesn't leak memory or compromises security by using the provided globals. Make sure it is properly audited before you go to production.
+We provide this file, to help you get up and running with Universal. It shows how to shim, stub or polyfill missing browser or 3rd party libraries. It serves as a starting point, from which you can build your own SSR solution. However, make sure your app doesn't leak memory or compromise security using the provided globals. And make sure it is properly audited before you go to production.

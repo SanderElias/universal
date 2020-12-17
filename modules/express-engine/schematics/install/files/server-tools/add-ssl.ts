@@ -27,8 +27,8 @@ export function addSSL(server: express.Express,serverSettings:ServerSettings): e
       pems.private = readFileSync(serverSettings.sslKey).toString();
       pems.cert = readFileSync(serverSettings.sslCert).toString();
     } catch (e) {
-      console.log(`
-        Please check the path for the certificate.
+      console.error(`
+        Please check the path for the certificate sslKey or sslCert.
          Could not read/find the file: ${e.path}
         `);
       /** hard exit here, We don't want to procees with faulty certs */

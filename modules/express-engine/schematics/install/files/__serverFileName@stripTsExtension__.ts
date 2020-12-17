@@ -55,7 +55,7 @@ export function app(): express.Express {
 
 function run() {
   // Start up the Node server
-  const server = serverSettings.useSSL ? await addSSL(app(),serverSettings) : app();
+  const server = serverSettings.useSSL ? addSSL(app(),serverSettings) : app();
   server.listen(serverSettings.port, serverSettings.hostName, () => {
     console.log(
       `Node Express server listening on http${

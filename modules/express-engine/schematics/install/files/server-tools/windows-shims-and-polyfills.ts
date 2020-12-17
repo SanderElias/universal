@@ -43,6 +43,9 @@ declare var global: {
   KeyboardEvent: (name: any) => KeyboardEvent;
   /** In page data request without navigating from the current URL. */
   XMLHttpRequest: XMLHttpRequest;
+  /**
+   * your Typescript shims should go below this comment
+   */
 };
 
 /** Assign global values from domino window. */
@@ -84,3 +87,7 @@ global.requestAnimationFrame = window.requestAnimationFrame = function rqa(
  * An empty function, animation frames can not be cancelled with this shim.
  */
 global.cancelAnimationFrame = window.cancelAnimationFrame = (x?: number) => {};
+
+/**
+ * Your shims and polyfills should go below here.
+ */
